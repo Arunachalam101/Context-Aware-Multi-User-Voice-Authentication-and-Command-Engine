@@ -16,15 +16,17 @@ def build_client_zip():
     # Explicitly include only these root directories
     include_dirs = {
         'audio', 'commands', 'database', 'features', 'gui',
-        'ml', 'models', 'response', 'speech', 'utils'
+        'ml', 'models', 'response', 'speech', 'utils', 'offline_packages'  # New: Include offline packages if available
     }
     
     # Root Python files to include
     root_files = {
         'app.py', 'requirements.txt', 'README.md',
         'RUN.bat', 'START.bat', 'START.ps1', 'run.bat', 'run_safe.bat', 'run_safe.py',
+        'INSTALL_OFFLINE.bat',  # New: Offline installation
         'safe_startup.py', 'setup_helper.py', 'download_vosk_model.py',
         'diagnose_system.py', 'test_microphone.py', 'fix_vosk_model.py', 'diagnose_vosk.py',
+        'download_offline_packages.py',  # New: For offline package generation
         'CLIENT_QUICK_START.md', 'CLIENT_START_HERE.md', 'CLIENT_SETUP.txt',
         'COMPLETION_SUMMARY.md', 'DELIVERY_SUMMARY.md',
         'DEPLOYMENT.md', 'DEPLOYMENT_CHECKLIST.md', 'DEPLOYMENT_GUIDE.md',
@@ -32,7 +34,8 @@ def build_client_zip():
         'QUICK_START.md', 'SCHEDULE.md', 'SPEECH_RECOGNITION_GUIDE.md',
         'START_HERE.md', 'START_HERE.txt', 'START_PROJECT.bat',
         'TEST_RESULTS.md', 'VOSK_INITIALIZATION_FIX.md', 'MODEL_CREATION_ERROR_FIX.md',
-        'FRIEND_SETUP.md'
+        'FRIEND_SETUP.md', 'CLIENT_NETWORK_SOLUTIONS.md',  # New: Network solutions guide
+        'NETWORK_INSTALLATION_GUIDE.md', 'RUN_BAT_TROUBLESHOOTING.md'  # New: Troubleshooting guides
     }
     
     # Documentation files to include
@@ -90,8 +93,13 @@ def build_client_zip():
         print(f"   Size: {zip_size_mb:.1f} MB")
         print(f"\n[INFO] To deploy:")
         print(f"   1. Extract ZIP to client folder")
-        print(f"   2. Run: START.bat")
-        print(f"   3. System auto-installs dependencies and downloads VOSK (~1.4GB)")
+        print(f"   2. Option A (Online): Run RUN.bat")
+        print(f"   3. Option B (Offline): Run INSTALL_OFFLINE.bat (if offline_packages/ included)")
+        print(f"   4. System auto-installs dependencies and downloads VOSK (~1.4GB) if needed")
+        
+        # Check if offline_packages is included
+        offline_status = "[INCLUDED]" if (project_dir / "offline_packages").exists() else "[NOT INCLUDED - Run download_offline_packages.py to add]"
+        print(f"\n[INFO] Offline packages: {offline_status}")
         
         return True
         
