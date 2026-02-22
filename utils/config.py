@@ -66,7 +66,7 @@ APP_LOG_FILE = LOGS_DIR / "app.log"
 # VOSK SPEECH RECOGNITION
 # ============================================================================
 
-VOSK_MODEL_DIR = PROJECT_ROOT / "vosk_model" / "vosk-model-en-us-0.42-gigaspeech"
+VOSK_MODEL_DIR = PROJECT_ROOT / "vosk_model"
 """Path to VOSK offline speech recognition model."""
 
 VOSK_MODEL_NAME = "vosk-model-en-us-0.42-gigaspeech"
