@@ -54,16 +54,27 @@ def check_model_directory():
     if VOSK_MODEL_DIR.exists():
         # Check for key model files
         required_files = ['model-en-us', 'ivector', 'conf']
+        required_dirs = ['am-english', 'conf', 'graph', 'ivector']
+        
         missing = [f for f in required_files 
                   if not (VOSK_MODEL_DIR / f).exists()]
+        missing_dirs = [d for d in required_dirs
+                       if not (VOSK_MODEL_DIR / d).exists()]
         
-        if missing:
-            print(f"  [INCOMPLETE] Model missing: {missing}")
-            print(f"  Deleting incomplete model...")
-            shutil.rmtree(VOSK_MODEL_DIR)
-            return False
+        if missing or missing_dirs:
+            print(f"  [INCOMPLETE] Missing: {missing + missing_dirs}")
+            print(f"  Model is corrupted or incomplete")
+            print(f"  Deleting broken model...")
+            import shutil
+            try:
+                shutil.rmtree(VOSK_MODEL_DIR)
+                print(f"  [OK] Deleted incomplete model")
+                return False
+            except Exception as e:
+                print(f"  [ERROR] Failed to delete: {e}")
+                return False
         else:
-            print(f"  [OK] Model directory valid at {VOSK_MODEL_DIR}")
+            print(f"  [OK] Model directory structure valid")
             return True
     else:
         print(f"  [MISSING] {VOSK_MODEL_DIR} not found")

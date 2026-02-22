@@ -70,7 +70,23 @@ class VoskRecognizer:
                 )
 
             # Load model
-            model = Model(str(self.model_path))
+            try:
+                model = Model(str(self.model_path))
+            except Exception as model_err:
+                if "Failed to create a model" in str(model_err):
+                    raise VoskRecognitionError(
+                        f"Failed to create a model: {str(model_err)}\n"
+                        f"  Model path: {self.model_path}\n"
+                        f"  This usually means:\n"
+                        f"    1. Model files are corrupted\n"
+                        f"    2. Model extraction was incomplete\n"
+                        f"    3. Missing critical model files\n"
+                        f"  Solution: Run 'python diagnose_vosk.py' for details\n"
+                        f"  Then run: python fix_vosk_model.py"
+                    )
+                else:
+                    raise VoskRecognitionError(f"Model initialization failed: {str(model_err)}")
+            
             self.recognizer = KaldiRecognizer(model, self.sample_rate)
             self.is_initialized = True
 
@@ -80,6 +96,8 @@ class VoskRecognizer:
             raise VoskRecognitionError(
                 "vosk package not installed. Install with: pip install vosk"
             )
+        except VoskRecognitionError:
+            raise
         except Exception as e:
             raise VoskRecognitionError(f"Initialization error: {str(e)}")
 
