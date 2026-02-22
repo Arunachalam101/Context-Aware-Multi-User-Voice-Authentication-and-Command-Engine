@@ -28,7 +28,11 @@ def check_vosk_package():
     print("[1/5] Checking vosk package...")
     try:
         import vosk
-        print(f"  [OK] vosk {vosk.__version__} installed")
+        try:
+            version = vosk.__version__
+            print(f"  [OK] vosk {version} installed")
+        except AttributeError:
+            print(f"  [OK] vosk installed")
         return True
     except ImportError:
         print("  [FAILED] vosk package not found")
