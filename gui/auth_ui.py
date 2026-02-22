@@ -328,19 +328,29 @@ class AuthenticationWindow:
             features = extractor.get_feature_vector(audio, compute_stats=True)
 
             # Authenticate
-            self.window.after(0, lambda: self.auth_status_var.set("🔐 Authenticating..."))
+            def safe_set_status():
+                try:
+                    if self.window.winfo_exists():
+                        self.auth_status_var.set("🔐 Authenticating...")
+                except:
+                    pass
+            self.window.after(0, safe_set_status)
 
             result = self.authenticator.authenticate(features, return_details=True)
 
             # Update UI
             if result["authenticated"]:
                 self.authenticated_user = result["speaker"]
-                self.window.after(0, lambda: self.result_var.set(f"✓ Authenticated as: {self.authenticated_user}"))
-                self.window.after(0, lambda: self.result_label.config(foreground="green"))
-                self.window.after(0, lambda: self.confidence_var.set(f"Confidence: {result['confidence']:.2%}"))
-
-                # Enable command execution if recognizer is ready or wait for it
-                self.window.after(0, lambda: self._update_command_button_status())
+                def safe_update_success():
+                    try:
+                        if self.window.winfo_exists():
+                            self.result_var.set(f"✓ Authenticated as: {self.authenticated_user}")
+                            self.result_label.config(foreground="green")
+                            self.confidence_var.set(f"Confidence: {result['confidence']:.2%}")
+                            self._update_command_button_status()
+                    except:
+                        pass
+                self.window.after(0, safe_update_success)
 
                 # Speak response
                 try:
@@ -352,9 +362,15 @@ class AuthenticationWindow:
                     pass
 
             else:
-                self.window.after(0, lambda: self.result_var.set("✗ Authentication Failed - Unknown Speaker"))
-                self.window.after(0, lambda: self.result_label.config(foreground="red"))
-                self.window.after(0, lambda: self.confidence_var.set(f"Confidence: {result['confidence']:.2%} (threshold: {AUTHENTICATION_THRESHOLD:.0%})"))
+                def safe_update_fail():
+                    try:
+                        if self.window.winfo_exists():
+                            self.result_var.set("✗ Authentication Failed - Unknown Speaker")
+                            self.result_label.config(foreground="red")
+                            self.confidence_var.set(f"Confidence: {result['confidence']:.2%} (threshold: {AUTHENTICATION_THRESHOLD:.0%})")
+                    except:
+                        pass
+                self.window.after(0, safe_update_fail)
 
                 try:
                     self.response_engine.speak_response("authentication_failed")
@@ -362,16 +378,36 @@ class AuthenticationWindow:
                     pass
 
         except RecorderError as e:
-            self.window.after(0, lambda: messagebox.showerror("Recording Error", str(e)))
-            self.window.after(0, lambda: self.auth_status_var.set("Recording failed"))
+            def safe_show_error_1():
+                try:
+                    if self.window.winfo_exists():
+                        messagebox.showerror("Recording Error", str(e))
+                        self.auth_status_var.set("Recording failed")
+                except:
+                    pass
+            self.window.after(0, safe_show_error_1)
 
         except (MFCCExtractionError, PredictionError) as e:
-            self.window.after(0, lambda: messagebox.showerror("Processing Error", str(e)))
-            self.window.after(0, lambda: self.auth_status_var.set("Processing failed"))
+            def safe_show_error_2():
+                try:
+                    if self.window.winfo_exists():
+                        messagebox.showerror("Processing Error", str(e))
+                        self.auth_status_var.set("Processing failed")
+                except:
+                    pass
+            self.window.after(0, safe_show_error_2)
 
         finally:
             self.is_processing = False
-            self.window.after(0, lambda: self.auth_btn.config(state=tk.NORMAL))
+            # Safely update button - handle case where window is closed
+            def safe_enable_button():
+                try:
+                    if self.window.winfo_exists():
+                        self.auth_btn.config(state=tk.NORMAL)
+                except:
+                    pass  # Window or widget no longer exists
+            
+            self.window.after(0, safe_enable_button)
 
     def _on_execute_command(self):
         """Handle command execution."""

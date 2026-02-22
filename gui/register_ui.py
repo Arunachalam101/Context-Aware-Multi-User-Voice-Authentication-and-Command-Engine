@@ -65,6 +65,23 @@ class RegisterWindow:
         # Setup UI
         self._create_widgets()
 
+    def _safe_update(self, callback):
+        """
+        Safely update UI from background thread.
+        Checks if window still exists before updating.
+        
+        Args:
+            callback: Function to call if window exists.
+        """
+        def safe_callback():
+            try:
+                if self.window.winfo_exists():
+                    callback()
+            except:
+                pass  # Window or widget no longer exists
+        
+        self.window.after(0, safe_callback)
+
     def _create_widgets(self):
         """Create registration window widgets."""
 
@@ -224,21 +241,21 @@ class RegisterWindow:
             audio = self.recorder.record(show_progress=False)
 
             if audio is None:
-                self.window.after(0, lambda: self.status_var.set("Recording cancelled"))
+                self._safe_update(lambda: self.status_var.set("Recording cancelled"))
                 self.is_recording = False
-                self.window.after(0, lambda: self.record_btn.config(state=tk.NORMAL))
+                self._safe_update(lambda: self.record_btn.config(state=tk.NORMAL))
                 return
 
             # Validate audio
             is_valid, message = validate_audio(audio)
             if not is_valid:
-                self.window.after(0, lambda: messagebox.showwarning("Audio Validation", message))
+                self._safe_update(lambda: messagebox.showwarning("Audio Validation", message))
                 self.is_recording = False
-                self.window.after(0, lambda: self.record_btn.config(state=tk.NORMAL))
+                self._safe_update(lambda: self.record_btn.config(state=tk.NORMAL))
                 return
 
             # Extract features
-            self.window.after(0, lambda: self.status_var.set("🔄 Extracting MFCC features..."))
+            self._safe_update(lambda: self.status_var.set("🔄 Extracting MFCC features..."))
 
             features = self.mfcc_extractor.get_feature_vector(audio, compute_stats=True)
             self.features_list.append(features)
@@ -249,33 +266,33 @@ class RegisterWindow:
             # Update counter
             self.samples_collected += 1
             sample_count = self.samples_collected
-            self.window.after(0, lambda: self.counter_var.set(f"Samples: {sample_count}"))
+            self._safe_update(lambda: self.counter_var.set(f"Samples: {sample_count}"))
 
             # Update progress
             progress = min(100, (sample_count / MIN_SAMPLES_FOR_TRAINING) * 100)
-            self.window.after(0, lambda: self.progress_var.set(progress))
+            self._safe_update(lambda: self.progress_var.set(progress))
 
             # Update status
             if sample_count >= MIN_SAMPLES_FOR_TRAINING:
-                self.window.after(0, lambda: self.status_var.set(f"✓ Ready to complete! ({sample_count} samples)"))
-                self.window.after(0, lambda: self.complete_btn.config(state=tk.NORMAL))
+                self._safe_update(lambda: self.status_var.set(f"✓ Ready to complete! ({sample_count} samples)"))
+                self._safe_update(lambda: self.complete_btn.config(state=tk.NORMAL))
             else:
                 remaining = MIN_SAMPLES_FOR_TRAINING - sample_count
-                self.window.after(0, lambda: self.status_var.set(f"✓ Sample {sample_count} recorded! ({remaining} more needed)"))
+                self._safe_update(lambda: self.status_var.set(f"✓ Sample {sample_count} recorded! ({remaining} more needed)"))
 
-            self.window.after(0, lambda: messagebox.showinfo("Success", f"Sample {self.samples_collected} recorded successfully!"))
+            self._safe_update(lambda: messagebox.showinfo("Success", f"Sample {self.samples_collected} recorded successfully!"))
 
         except RecorderError as e:
-            self.window.after(0, lambda: messagebox.showerror("Recording Error", str(e)))
-            self.window.after(0, lambda: self.status_var.set("Recording failed"))
+            self._safe_update(lambda: messagebox.showerror("Recording Error", str(e)))
+            self._safe_update(lambda: self.status_var.set("Recording failed"))
 
         except MFCCExtractionError as e:
-            self.window.after(0, lambda: messagebox.showerror("Feature Extraction Error", str(e)))
-            self.window.after(0, lambda: self.status_var.set("Feature extraction failed"))
+            self._safe_update(lambda: messagebox.showerror("Feature Extraction Error", str(e)))
+            self._safe_update(lambda: self.status_var.set("Feature extraction failed"))
 
         finally:
             self.is_recording = False
-            self.window.after(0, lambda: self.record_btn.config(state=tk.NORMAL))
+            self._safe_update(lambda: self.record_btn.config(state=tk.NORMAL))
 
     def _on_complete(self):
         """Handle complete registration."""
