@@ -1,0 +1,147 @@
+VOICE AUTHENTICATION SYSTEM - CLIENT SETUP GUIDE
+================================================
+
+WHAT YOU NEED:
+✓ Windows computer (7 or newer)
+✓ Microphone (any USB mic)
+✓ Internet connection (first time only)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: EXTRACT THE FOLDER
+════════════════════════════
+
+1. Find: Voice-Auth-System-Client.zip
+2. Right-click it
+3. Select: "Extract All..."
+4. Choose folder location
+5. Click "Extract"
+
+Result: A folder called "Voice-Auth-System-Client"
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 2: OPEN THE FOLDER
+════════════════════════
+
+1. Double-click the extracted folder
+2. You'll see many files inside
+3. Look for: RUN.bat (has a gear/cog icon)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 3: CLICK RUN.bat
+═════════════════════
+
+1. Double-click RUN.bat
+2. A black window opens
+3. You see: "Starting setup... please wait"
+4. DO NOT CLOSE THIS WINDOW
+
+First Time Setup (Only Once):
+- Downloads speech model (~1.4 GB)
+- May take 5-15 minutes
+- Shows progress messages
+- Application launches automatically
+
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 4: USE THE APPLICATION
+════════════════════════════
+
+Window 1: REGISTRATION
+- New users click "Register"
+- Enter your name
+- Record voice 3 times
+- System learns your voice
+
+Window 2: LOGIN
+- Say your name
+- System recognizes you
+- Login successful!
+
+Window 3: COMMANDS
+- Say commands like:
+  "Open calculator"
+  "Play music"
+  "Open notepad"
+  
+System responds and executes
+
+═══════════════════════════════════════════════════════════════════════════════
+
+COMMON ISSUES & SOLUTIONS
+═════════════════════════
+
+Problem: "Python not found"
+Solution: 
+  1. Download Python: https://www.python.org/downloads/
+  2. Run installer
+  3. CHECK "Add Python to PATH"
+  4. Restart computer
+  5. Try RUN.bat again
+
+Problem: Error during download
+Solution:
+  1. Check internet connection
+  2. Ensure 2GB free disk space
+  3. Try RUN.bat again
+
+Problem: "Permission denied"
+Solution:
+  1. Run RUN.bat as Administrator
+     Right-click → Run as Administrator
+  2. Click "Yes"
+
+Problem: Microphone not detected
+Solution:
+  1. Check Windows Settings
+  2. Privacy → Microphone
+  3. Enable microphone access
+  4. Ensure mic is not muted
+
+═══════════════════════════════════════════════════════════════════════════════
+
+NEXT TIMES
+═══════════
+
+After first setup:
+- Just double-click RUN.bat again
+- Launches in 10 seconds
+- No more waiting!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TIPS FOR BEST RESULTS
+═════════════════════
+
+✓ Quiet room (no background noise)
+✓ Clear speech (like talking to Alexa)
+✓ Good microphone (USB mics work great)
+✓ Same voice same commands (consistency)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+MORE HELP
+═════════
+
+In the folder you'll find:
+- CLIENT_START_HERE.md - Detailed guide
+- README.md - Full documentation
+- TROUBLESHOOTING.md - Error solutions
+
+Read these if you have questions!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+QUICK REFERENCE
+════════════════
+
+TO START:     Double-click RUN.bat
+TO REGISTER:  Click "Register New User"
+TO LOGIN:     Say your name
+TO COMMAND:   Say what you want (e.g., "open calculator")
+
+═══════════════════════════════════════════════════════════════════════════════
+
+That's all you need to know! Enjoy! 🎤
