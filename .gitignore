@@ -58,6 +58,6 @@ data/raw_audio/*
 data/processed_features/*
 !data/processed_features/.gitkeep
 
-# Models (keep structure, ignore large files)
-models/*.pkl
-models/*.joblib
+# Models - INCLUDED for deployment (files are small)
+# models/*.pkl    <- REMOVED - pre-trained models needed
+# models/*.joblib <- REMOVED - pre-trained models needed
